@@ -1,52 +1,50 @@
 gem 'minitest', '~> 5.0'
 require 'csv'
 require 'minitest/autorun'
+require 'minitest/spec'
 require 'minitest/pride'
 require './lib/person'
 require './lib/people'
 
-class PeopleTest < Minitest::Test
-  def filename
-    @filename ||= File.absolute_path("../fixtures/people.csv", __FILE__)
-  end
+describe People do
 
-  attr_reader :people
-  def setup
-    @people = People.new(filename)
-  end
+  describe "importig people from a csv" do
 
-  def test_filename
-    assert_equal filename, people.filename
-  end
+    let(:filename) { File.absolute_path("../fixtures/people.csv", __FILE__) }
 
-  def test_load_data
-    person = people.all[247]
-    assert_equal 248, person.id
-    assert_equal "Lauryn Nienow", person.name
-  end
+    let(:people) { People.new(filename) }
 
-  def test_find_by_first_name
-    imeldas = people.find_by_first_name("Imelda")
-    assert_equal 4, imeldas.size
-    last_names = imeldas.map do |person|
-      person.last_name
+    it "should retain the filename" do
+      people.filename.must_equal filename
     end
-    assert_equal ["Hane", "Heidenreich", "Schowalter", "Wilkinson"], last_names.sort
-  end
 
-  def test_find_by_last_name
-    rices = people.find_by_last_name("Rice")
-    assert_equal 3, rices.size
-    first_names = rices.map do |person|
-      person.first_name
+    it "should return the 247th record" do
+      person = people.all[247]
+      assert_equal 248, person.id
+      person.id.must_equal 248
+      person.name.must_equal "Lauryn Nienow"
     end
-    expected = ["Elnora", "Jamal", "Maye"]
-    assert_equal expected, first_names.sort
+
+    it "should return the first names when finding by first name" do
+      imeldas = people.find_by_first_name("Imelda")
+      assert_equal 4, imeldas.size
+      last_names = imeldas.map { |p| p.last_name }.sort
+      last_names.must_equal ["Hane", "Heidenreich", "Schowalter", "Wilkinson"]
+    end
+
+    it "should return the last names when finding by last name" do
+      rices = people.find_by_last_name("Rice")
+      assert_equal 3, rices.size
+      first_names = rices.map { |p| p.first_name }.sort
+      first_names.must_equal ["Elnora", "Jamal", "Maye"] 
+    end
+
+    it "should return records by id" do
+      person = people.find_by_id(115)
+      person.id.must_equal 115
+      person.name.must_equal "Edd Schowalter"
+    end
+
   end
 
-  def test_find_by_id
-    person = people.find_by_id(115)
-    assert_equal 115, person.id
-    assert_equal "Edd Schowalter", person.name
-  end
 end
