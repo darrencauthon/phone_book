@@ -13,11 +13,11 @@ class People
   end
 
   def find_by_first_name(s)
-    all.select { |p| p.first_name == s }
+    find_by(:first_name, s)
   end
 
   def find_by_last_name(s)
-    all.select { |p| p.last_name == s }
+    find_by(:last_name, s)
   end
 
   def find_by_id(id)
