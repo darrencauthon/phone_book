@@ -14,20 +14,19 @@ class PhoneBook
   end
 
   def lookup(name)
-    if name.include? ', '
-      the_people = people.find_by_last_name name.split(', ')[0]
-      the_people = the_people.select { |x| x.first_name == name.split(', ')[1] }
-    else
-      the_people = people.find_by_last_name name
+    last_name, first_name = terms(name)
+
+    results = people.find_by_last_name(last_name)
+    if first_name
+      results = results.select { |person| person.first_name == first_name }
     end
-    the_people.map do |person|
-      the_numbers = numbers.find_by_person_id person.id
-      Entry.new(person, the_numbers)
+    results.map do |person|
+      Entry.new(person, numbers.find_by_person_id(person.id))
     end
   end
 
   def terms(name)
-    name.match(/([^,]*),?\ ?(.+)?/).to_a[1..-1]
+    name.split(', ')
   end
 
   def reverse_lookup(number)
