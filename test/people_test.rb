@@ -43,6 +43,40 @@ describe People do
 
   end
 
+  describe "find_by_last_name" do
+
+    let(:people) { People.new(nil) }
+
+    before do
+      records = [Person.new(first_name: 'x'),
+                 Person.new(first_name: 'y'),
+                 Person.new(first_name: 'y'),
+                 Person.new(first_name: 'z')]
+      people.stubs(:all).returns records
+    end
+
+    ['x', 'z'].each do |example|
+
+      describe "single match for #{example}" do
+        it "should return the single result" do
+          results = people.find_by_first_name example
+          results.count.must_equal 1
+          results.first.first_name.must_equal example
+        end
+      end
+
+    end
+    
+    describe "multiple matches" do
+      it "should return the multiple matches" do
+        results = people.find_by_first_name 'y'
+        results.count.must_equal 2
+        results.each { |r| r.first_name.must_equal 'y' }
+      end
+    end
+
+  end
+
   describe "importig people from a csv" do
 
     let(:filename) { File.absolute_path("../fixtures/people.csv", __FILE__) }

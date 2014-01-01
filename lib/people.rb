@@ -17,9 +17,7 @@ class People
   end
 
   def find_by_last_name(s)
-    ["Elnora", "Jamal", "Maye"].map do |name|
-      Person.new(first_name: name)
-    end
+    all.select { |p| p.last_name == s }
   end
 
   def find_by_id(id)
