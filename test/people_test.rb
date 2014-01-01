@@ -9,70 +9,40 @@ require 'mocha/setup'
 
 describe People do
 
-  describe "find_by_first_name" do
+  [:first_name, :last_name].each do |property|
 
-    let(:people) { People.new(nil) }
+    describe "find_by_#{property}" do
 
-    before do
-      records = [Person.new(first_name: 'a'),
-                 Person.new(first_name: 'c'),
-                 Person.new(first_name: 'c'),
-                 Person.new(first_name: 'd')]
-      people.stubs(:all).returns records
-    end
+      let(:people) { People.new(nil) }
 
-    ['a', 'd'].each do |example|
+      before do
+        records = [Person.new(property => 'a'),
+                   Person.new(property => 'c'),
+                   Person.new(property => 'c'),
+                   Person.new(property => 'd')]
+        people.stubs(:all).returns records
+      end
 
-      describe "single match for #{example}" do
-        it "should return the single result" do
-          results = people.find_by_first_name example
-          results.count.must_equal 1
-          results.first.first_name.must_equal example
+      ['a', 'd'].each do |example|
+
+        describe "single match for #{example}" do
+          it "should return the single result" do
+            results = people.send("find_by_#{property}".to_sym, example)
+            results.count.must_equal 1
+            results.first.send(property).must_equal example
+          end
+        end
+
+      end
+      
+      describe "multiple matches" do
+        it "should return the multiple matches" do
+          results = people.send("find_by_#{property}".to_sym, 'c')
+          results.count.must_equal 2
+          results.each { |r| r.send(property).must_equal 'c' }
         end
       end
 
-    end
-    
-    describe "multiple matches" do
-      it "should return the multiple matches" do
-        results = people.find_by_first_name 'c'
-        results.count.must_equal 2
-        results.each { |r| r.first_name.must_equal 'c' }
-      end
-    end
-
-  end
-
-  describe "find_by_last_name" do
-
-    let(:people) { People.new(nil) }
-
-    before do
-      records = [Person.new(first_name: 'x'),
-                 Person.new(first_name: 'y'),
-                 Person.new(first_name: 'y'),
-                 Person.new(first_name: 'z')]
-      people.stubs(:all).returns records
-    end
-
-    ['x', 'z'].each do |example|
-
-      describe "single match for #{example}" do
-        it "should return the single result" do
-          results = people.find_by_first_name example
-          results.count.must_equal 1
-          results.first.first_name.must_equal example
-        end
-      end
-
-    end
-    
-    describe "multiple matches" do
-      it "should return the multiple matches" do
-        results = people.find_by_first_name 'y'
-        results.count.must_equal 2
-        results.each { |r| r.first_name.must_equal 'y' }
-      end
     end
 
   end
