@@ -77,6 +77,32 @@ describe People do
 
   end
 
+  describe "find_by_id" do
+
+    [1, 2, 3, 4].each do |id|
+
+      describe "it should return the record matching by id" do
+
+        let(:people) { People.new(nil) }
+
+        before do
+          records = [Person.new(id: 1),
+                     Person.new(id: 2),
+                     Person.new(id: 3),
+                     Person.new(id: 4)]
+          people.stubs(:all).returns records
+        end
+
+        it "should return the appropriate record" do
+          people.find_by_id(id).id.must_equal id
+        end
+
+      end
+
+    end
+
+  end
+
   describe "importig people from a csv" do
 
     let(:filename) { File.absolute_path("../fixtures/people.csv", __FILE__) }

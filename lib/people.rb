@@ -21,9 +21,7 @@ class People
   end
 
   def find_by_id(id)
-    Person.new(id: 115,
-               first_name: 'Edd',
-               last_name: 'Schowalter')
+    find_by(:id, id).first
   end
 
   private
