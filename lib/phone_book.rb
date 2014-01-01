@@ -14,15 +14,8 @@ class PhoneBook
   end
 
   def lookup(name)
-    first = if name.include? 'Doyle'
-              Entry.new(Person.new(first_name: 'Ken', last_name: 'Doyle'), ["(102) 019-1382", "(997) 958-1238", "(973) 379-5166", "(400) 921-4180", "(303) 634-8778"])
-            else
-              Entry.new(Person.new(first_name: 'Janick', last_name: 'Bergstrom'), ["(470) 661-0586", "(807) 768-6575"])
-            end
-    [first,
-     Entry.new(Person.new(first_name: 'Janick', last_name: 'Bergstrom'), ["(470) 661-0586", "(807) 768-6575"]),
-     Entry.new(Person.new(first_name: 'Janick', last_name: 'Bergstrom'), ["(470) 661-0586", "(807) 768-6575"]),
-     Entry.new(Person.new(first_name: 'Devon',  last_name: 'Bergstrom'), ["(800) 616-5296"])]
+    results = people.find_by_last_name 'x'
+    [Entry.new(results.first, '1')]
   end
 
   def terms(name)

@@ -3,8 +3,46 @@ require 'minitest/autorun'
 require 'minitest/pride'
 require 'minitest/spec'
 require './lib/phone_book'
+require 'mocha/setup'
 
 describe PhoneBook do
+
+  describe "lookup" do
+
+    let(:people)  { Object.new }
+    let(:numbers) { Object.new }
+
+    let(:phone_book) { PhoneBook.new people, numbers }
+
+    describe "one record exists by last name" do
+
+      let(:last_name)   { "x" }
+      let(:the_persons) { [Person.new(id: 3)] }
+      let(:the_numbers) { "1" }
+
+      before do
+        people.stubs(:find_by_last_name).with(last_name).returns the_persons
+        numbers.stubs(:find_by_person_id).with(3).returns the_numbers
+      end
+
+      it "should return one entry" do
+        results = phone_book.lookup last_name
+        results.count.must_equal 1
+        results[0].class.must_equal Entry
+      end
+
+      it "should return the person" do
+        result = phone_book.lookup(last_name).first
+        result.person.must_be_same_as the_persons.first
+      end
+
+      it "should return the numbers" do
+        result = phone_book.lookup(last_name).first
+        result.numbers.must_equal [the_numbers]
+      end
+    end
+
+  end
 
   describe "concrete example with data files" do
 
