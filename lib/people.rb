@@ -17,14 +17,14 @@ class People
   end
 
   def find_by_id(id)
-    find_by(:id, id).first
+    all.select { |x| x.id ==  id }.first
   end
 
   private
 
   def find_by(attribute, value)
     all.select do |person|
-      person.send(attribute) == value
+      person.send(attribute).downcase == value.downcase
     end
   end
 

@@ -34,13 +34,32 @@ describe People do
         end
 
       end
-      
+
       describe "multiple matches" do
         it "should return the multiple matches" do
           results = people.send("find_by_#{property}".to_sym, 'c')
           results.count.must_equal 2
           results.each { |r| r.send(property).must_equal 'c' }
         end
+      end
+
+      ['c', 'C'].each do |search_term|
+
+        describe "case insensitive matches" do
+
+          before do
+            records = [Person.new(property => 'c'),
+                       Person.new(property => 'C')]
+            people.stubs(:all).returns records
+          end
+
+          it "should return multiple matches" do
+            results = people.send("find_by_#{property}".to_sym, search_term)
+            results.count.must_equal 2
+          end
+
+        end
+
       end
 
     end
