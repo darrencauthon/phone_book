@@ -13,9 +13,7 @@ class People
   end
 
   def find_by_first_name(s)
-    ["Hane", "Heidenreich", "Schowalter", "Wilkinson"].map do |name|
-      Person.new(last_name: name)
-    end
+    all.select { |p| p.first_name == s }
   end
 
   def find_by_last_name(s)

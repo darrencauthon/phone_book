@@ -5,8 +5,43 @@ require 'minitest/spec'
 require 'minitest/pride'
 require './lib/person'
 require './lib/people'
+require 'mocha/setup'
 
 describe People do
+
+  describe "find_by_first_name" do
+
+    let(:people) { People.new(nil) }
+
+    before do
+      records = [Person.new(first_name: 'a'),
+                 Person.new(first_name: 'c'),
+                 Person.new(first_name: 'c'),
+                 Person.new(first_name: 'd')]
+      people.stubs(:all).returns records
+    end
+
+    ['a', 'd'].each do |example|
+
+      describe "single match for #{example}" do
+        it "should return the single result" do
+          results = people.find_by_first_name example
+          results.count.must_equal 1
+          results.first.first_name.must_equal example
+        end
+      end
+
+    end
+    
+    describe "multiple matches" do
+      it "should return the multiple matches" do
+        results = people.find_by_first_name 'c'
+        results.count.must_equal 2
+        results.each { |r| r.first_name.must_equal 'c' }
+      end
+    end
+
+  end
 
   describe "importig people from a csv" do
 
