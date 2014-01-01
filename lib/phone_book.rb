@@ -14,8 +14,9 @@ class PhoneBook
   end
 
   def lookup(name)
-    results = people.find_by_last_name 'x'
-    [Entry.new(results.first, '1')]
+    the_people  = people.find_by_last_name name
+    the_numbers = numbers.find_by_person_id the_people.first.id
+    [Entry.new(the_people.first, the_numbers)]
   end
 
   def terms(name)
