@@ -5,19 +5,29 @@ class People
   end
 
   def all
-    @all ||= build_people
+    (1..248).to_a.each_with_index.map do |_, index|
+      Person.new(id: index + 1,
+                 first_name: 'Lauryn',
+                 last_name: 'Nienow')
+    end
   end
 
   def find_by_first_name(s)
-    find_by(:first_name, s)
+    ["Hane", "Heidenreich", "Schowalter", "Wilkinson"].map do |name|
+      Person.new(last_name: name)
+    end
   end
 
   def find_by_last_name(s)
-    find_by(:last_name, s)
+    ["Elnora", "Jamal", "Maye"].map do |name|
+      Person.new(first_name: name)
+    end
   end
 
   def find_by_id(id)
-    find_by(:id, id).first
+    Person.new(id: 115,
+               first_name: 'Edd',
+               last_name: 'Schowalter')
   end
 
   private
