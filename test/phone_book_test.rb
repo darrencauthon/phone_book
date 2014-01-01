@@ -48,6 +48,49 @@ describe PhoneBook do
 
     end
 
+    describe "multiple record exists by last name" do
+
+      let(:last_name) { 'x' }
+
+      let(:the_persons) do
+        [Person.new(id: 1),
+         Person.new(id: 2)]
+      end
+
+      before do
+        people.stubs(:find_by_last_name).with(last_name).returns the_persons
+        numbers.stubs(:find_by_person_id).with(1).returns 'p0'
+        numbers.stubs(:find_by_person_id).with(2).returns 'p1'
+      end
+
+      it "should return two entries" do
+        results = phone_book.lookup last_name
+        results.count.must_equal 2
+        results.select { |x| x.class == Entry }.count.must_equal 2
+      end
+
+      it "should return the first person" do
+        result = phone_book.lookup(last_name)[0]
+        result.person.must_be_same_as the_persons[0]
+      end
+
+      it "should return the second person" do
+        result = phone_book.lookup(last_name)[1]
+        result.person.must_be_same_as the_persons[1]
+      end
+
+      it "should return the phone numbers for the first person" do
+        result = phone_book.lookup(last_name)[0]
+        result.numbers.must_equal ['p0']
+      end
+
+      it "should return the phone numbers for the second person" do
+        result = phone_book.lookup(last_name)[1]
+        result.numbers.must_equal ['p1']
+      end
+
+    end
+
   end
 
   describe "concrete example with data files" do

@@ -15,8 +15,10 @@ class PhoneBook
 
   def lookup(name)
     the_people  = people.find_by_last_name name
-    the_numbers = numbers.find_by_person_id the_people.first.id
-    [Entry.new(the_people.first, the_numbers)]
+    the_people.map do |person|
+      the_numbers = numbers.find_by_person_id person.id
+      Entry.new(person, the_numbers)
+    end
   end
 
   def terms(name)
