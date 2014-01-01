@@ -17,8 +17,11 @@ class PhoneBook
     last_name, first_name = terms(name)
 
     results = people.find_by_last_name(last_name)
+    results << people.find_by_first_name(name)
+    results.flatten!
+
     if first_name
-      results = results.select { |person| person.first_name == first_name }
+      results = results.select { |person| person.first_name.downcase == first_name }
     end
     results.map do |person|
       Entry.new(person, numbers.find_by_person_id(person.id))
@@ -26,7 +29,9 @@ class PhoneBook
   end
 
   def terms(name)
-    name.split(', ')
+    last_name, first_name = name.split(', ')
+    first_name.downcase! if first_name
+    [last_name, first_name]
   end
 
   def reverse_lookup(number)
