@@ -23,6 +23,7 @@ class People
   private
 
   def find_by(attribute, value)
+    return [] if value.to_s == ''
     all.select do |person|
       person.send(attribute).to_s.downcase == value.downcase
     end

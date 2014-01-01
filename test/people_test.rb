@@ -78,6 +78,25 @@ describe People do
 
       end
 
+      [nil, ''].each do |bad_value|
+
+        describe "searching for bad values" do
+
+          before do
+            records = [Person.new(property => nil),
+                       Person.new(property => '')]
+            people.stubs(:all).returns records
+          end
+
+          it "should return nothing" do
+            results = people.send("find_by_#{property}".to_sym, bad_value)
+            results.count.must_equal 0
+          end
+
+        end
+
+      end
+
     end
 
   end
