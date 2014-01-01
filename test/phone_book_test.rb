@@ -118,6 +118,35 @@ describe PhoneBook do
 
   end
 
+  describe "reverse_lookup" do
+
+    let(:people)  { Object.new }
+    let(:numbers) { Object.new }
+
+    let(:phone_book) { PhoneBook.new people, numbers }
+
+    let(:person_id)   { Object.new }
+    let(:person)      { Object.new }
+    let(:number)      { Object.new }
+    let(:search_term) { Object.new }
+
+    let(:number_lookup_result) do
+      Struct.new(:person_id).new person_id
+    end
+
+    it "should return an entry with info for a person with a matching number" do
+      numbers.stubs(:find_by_number).with(search_term).returns number_lookup_result
+      people.stubs(:find_by_id).with(person_id).returns person
+      numbers.stubs(:find_by_person_id).with(person_id).returns number
+
+      result = phone_book.reverse_lookup search_term
+      result.person.must_be_same_as person
+      result.numbers.must_equal [number]
+        
+    end
+
+  end
+
   describe "concrete example with data files" do
 
     describe "first example" do

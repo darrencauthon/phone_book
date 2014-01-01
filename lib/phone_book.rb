@@ -30,6 +30,7 @@ class PhoneBook
   end
 
   def reverse_lookup(number)
-    Entry.new(Person.new(first_name: 'Marisa', last_name: 'Kessler'), ["(857) 229-4967", "(378) 724-7986"])
+    id = numbers.find_by_number(number).person_id
+    Entry.new(people.find_by_id(id), numbers.find_by_person_id(id))
   end
 end
