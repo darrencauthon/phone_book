@@ -17,8 +17,8 @@ class PhoneBook
     last_name, first_name = terms(name)
 
     results = people.find_by_last_name(last_name)
-
-    results = people.find_by_first_name(name) if results.count == 0
+    results << people.find_by_first_name(name)
+    results.flatten!
 
     if first_name
       results = results.select { |person| person.first_name == first_name }

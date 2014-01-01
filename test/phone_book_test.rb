@@ -14,6 +14,10 @@ describe PhoneBook do
 
     let(:phone_book) { PhoneBook.new people, numbers }
 
+    before do
+      people.stubs(:find_by_first_name).returns []
+    end
+
     [ { last_name: 'x', person_id: 3, phone_numbers: '1' },
       { last_name: 'y', person_id: 4, phone_numbers: '2' }].each do |example|
 
@@ -132,6 +136,31 @@ describe PhoneBook do
       end
 
       it "should return one entry" do
+        results = phone_book.lookup search_term
+        results.count.must_equal 2
+      end
+
+    end
+
+    describe "searching by a value that matches a first name and a last name" do
+
+      let(:search_term) { 'pluto' }
+
+      let(:last_name_results) do
+        [Person.new(first_name: 'mars',  last_name: 'pluto')]
+      end
+
+      let(:first_name_results) do
+        [Person.new(first_name: 'pluto', last_name: 'venus')]
+      end
+
+      before do
+        people.stubs(:find_by_last_name).with(search_term).returns last_name_results
+        people.stubs(:find_by_first_name).with(search_term).returns first_name_results
+        numbers.stubs(:find_by_person_id).returns ''
+      end
+
+      it "should return two entries" do
         results = phone_book.lookup search_term
         results.count.must_equal 2
       end
