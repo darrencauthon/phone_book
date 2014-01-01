@@ -14,7 +14,12 @@ class PhoneBook
   end
 
   def lookup(name)
-    the_people  = people.find_by_last_name name
+    if name.include? ', '
+      the_people = people.find_by_last_name name.split(', ')[0]
+      the_people = the_people.select { |x| x.first_name == name.split(', ')[1] }
+    else
+      the_people = people.find_by_last_name name
+    end
     the_people.map do |person|
       the_numbers = numbers.find_by_person_id person.id
       Entry.new(person, the_numbers)
