@@ -91,7 +91,7 @@ describe PhoneBook do
 
     end
 
-    describe "searching by first name as well" do
+    describe "searching by last_name, first_name" do
 
       let(:search_term)   { 'fruit, apple' }
       let(:the_persons) do
@@ -112,6 +112,28 @@ describe PhoneBook do
       it "should return the person with a matching first name" do
         result = phone_book.lookup(search_term).first
         result.person.first_name.must_equal 'apple'
+      end
+
+    end
+
+    describe "searching by first_name" do
+
+      let(:search_term) { 'apple' }
+
+      let(:the_persons) do
+        [Person.new(first_name: 'apple',  last_name: 'fruit'),
+         Person.new(first_name: 'orange', last_name: 'fruit')]
+      end
+
+      before do
+        people.stubs(:find_by_last_name).with(search_term).returns []
+        people.stubs(:find_by_first_name).with(search_term).returns the_persons
+        numbers.stubs(:find_by_person_id).returns ''
+      end
+
+      it "should return one entry" do
+        results = phone_book.lookup search_term
+        results.count.must_equal 2
       end
 
     end
