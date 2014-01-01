@@ -62,6 +62,22 @@ describe People do
 
       end
 
+      describe "searching against nil fields" do
+
+        before do
+          records = [Person.new(property => 'z'),
+                     Person.new(property => nil)]
+          people.stubs(:all).returns records
+        end
+
+        it "should be ignored" do
+          results = people.send("find_by_#{property}".to_sym, 'z')
+          results.count.must_equal 1
+          results.first.send(property).must_equal 'z'
+        end
+
+      end
+
     end
 
   end
